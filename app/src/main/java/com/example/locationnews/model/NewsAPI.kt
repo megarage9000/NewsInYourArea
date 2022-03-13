@@ -21,8 +21,9 @@ const val API_KEY = "b418a73b2686469bbd9b60b8d583ed68"
 interface NewsApi {
     // Using extra parameters
     @GET("everything")
-    suspend fun getEverything(@QueryMap params: HashMap<String, String>) : ArrayList<NewsGet>
+    suspend fun getEverything(@QueryMap params: HashMap<String, String>) : Response<MutableList<NewsGet>>
+
 
     @GET("top-headlines")
-    suspend fun getHeadlines(@QueryMap params: HashMap<String, String>) : ArrayList<NewsGet>
+    suspend fun getHeadlines(@QueryMap params: HashMap<String, String>) : Response<MutableList<NewsGet>>
 }

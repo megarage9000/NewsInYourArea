@@ -5,10 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import retrofit2.Response
 
 class NewsViewModel(private val repository: NewsRepository) : ViewModel(){
 
-    val modelResponse: MutableLiveData<ArrayList<NewsGet>> = MutableLiveData()
+    val modelResponse: MutableLiveData<Response<MutableList<NewsGet>>> = MutableLiveData()
 
     fun getEverythingPost(params : HashMap<String, String>) {
         viewModelScope.launch {

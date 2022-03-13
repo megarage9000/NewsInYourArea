@@ -16,7 +16,7 @@ object NewsUtils {
 
 fun getRetrofit() : Retrofit {
     // Creating a gson deserializer
-    val type: Type = TypeToken.getParameterized(ArrayList::class.java, NewsGet::class.java).type
+    val type: Type = TypeToken.getParameterized(MutableList::class.java, NewsGet::class.java).type
     val gson = GsonBuilder()
         .registerTypeAdapter(type, GetNewsItemDeserializer())
         .create()
@@ -31,12 +31,12 @@ fun getRetrofit() : Retrofit {
 }
 
 // Using a custom deserializer: https://www.woolha.com/tutorials/retrofit-2-define-custom-gson-converter-factory
-class GetNewsItemDeserializer : JsonDeserializer<ArrayList<NewsGet>> {
+class GetNewsItemDeserializer : JsonDeserializer<MutableList<NewsGet>> {
     override fun deserialize(
         json: JsonElement?,
         typeOfT: Type?,
         context: JsonDeserializationContext?
-    ): ArrayList<NewsGet> {
+    ): MutableList<NewsGet> {
 
         val items = ArrayList<NewsGet>()
         val jsonObject = json!!.asJsonObject
@@ -60,7 +60,7 @@ class GetNewsItemDeserializer : JsonDeserializer<ArrayList<NewsGet>> {
                     (publishedAt ?: "NaN")))
             }
         }
-        return items
+        return items.toMutableList()
     }
 }
 
