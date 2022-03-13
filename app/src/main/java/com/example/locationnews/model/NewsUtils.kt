@@ -1,7 +1,6 @@
 package com.example.locationnews.model
 import com.google.gson.*
 import com.google.gson.reflect.TypeToken
-import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory;
 import java.lang.reflect.Type
@@ -16,10 +15,13 @@ object NewsUtils {
 }
 
 fun getRetrofit() : Retrofit {
+    // Creating a gson deserializer
     val type: Type = TypeToken.getParameterized(ArrayList::class.java, NewsGet::class.java).type
     val gson = GsonBuilder()
         .registerTypeAdapter(type, GetNewsItemDeserializer())
         .create()
+
+    // Return build
     return Retrofit.Builder()
         .baseUrl(NEWS_API)
         .addConverterFactory(
@@ -27,7 +29,6 @@ fun getRetrofit() : Retrofit {
         )
         .build()
 }
-
 
 // Using a custom deserializer: https://www.woolha.com/tutorials/retrofit-2-define-custom-gson-converter-factory
 class GetNewsItemDeserializer : JsonDeserializer<ArrayList<NewsGet>> {
@@ -38,26 +39,36 @@ class GetNewsItemDeserializer : JsonDeserializer<ArrayList<NewsGet>> {
     ): ArrayList<NewsGet> {
 
         val items = ArrayList<NewsGet>()
-
         val jsonObject = json!!.asJsonObject
         val success = jsonObject.get("status").asString
-        val jsonItems = jsonObject.get("articles").asJsonArray
 
         if(success == "ok"){
+            val jsonItems = jsonObject.get("articles").asJsonArray
+
             for (jsonItem in jsonItems) {
                 val jsonItemObject = jsonItem.asJsonObject
-                val publisher = jsonItemObject.get("source").asJsonObject.get("name").asString
-                val title = jsonItemObject.get("title").asString
-                val description = jsonItemObject.get("description").asString
-                val url = jsonItemObject.get("url").asString
-                val publishedAt = jsonItemObject.get("publishedAt").asString
-                items.add(NewsGet(publisher, title, description, url, publishedAt))
+                val publisher = getJsonNullable(getJsonNullable(jsonItemObject, "source")?.asJsonObject, "name")?.asString
+                val title = getJsonNullable(jsonItemObject, "title")?.asString
+                val description = getJsonNullable(jsonItemObject, "description")?.asString
+                val url = getJsonNullable(jsonItemObject, "url")?.asString
+                val publishedAt = getJsonNullable(jsonItemObject, "publishedAt")?.asString
+                items.add(NewsGet(
+                    (publisher ?: "NaN"),
+                    (title ?: "NaN"),
+                    (description ?: "NaN"),
+                    (url ?: "NaN"),
+                    (publishedAt ?: "NaN")))
             }
         }
         return items
     }
 }
 
+// Handle null json values
+fun getJsonNullable(jsonObject: JsonObject?, tag: String) : JsonElement? {
+    val res = jsonObject?.get(tag)
+    return if(res == JsonNull.INSTANCE || res == null) null else res
+}
 
 
 

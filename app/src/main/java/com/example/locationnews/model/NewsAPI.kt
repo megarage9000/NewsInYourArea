@@ -22,4 +22,7 @@ interface NewsApi {
     // Using extra parameters
     @GET("everything")
     suspend fun getEverything(@QueryMap params: HashMap<String, String>) : ArrayList<NewsGet>
+
+    @GET("top-headlines")
+    suspend fun getHeadlines(@QueryMap params: HashMap<String, String>) : ArrayList<NewsGet>
 }

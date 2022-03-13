@@ -15,7 +15,13 @@ class NewsViewModel(private val repository: NewsRepository) : ViewModel(){
             val response = repository.getEverythingPost(params)
             modelResponse.value = response
         }
+    }
 
+    fun getHeadlinesPost(params : HashMap<String, String>) {
+        viewModelScope.launch {
+            val response = repository.getHeadlinesPost(params)
+            modelResponse.value = response
+        }
     }
 }
 

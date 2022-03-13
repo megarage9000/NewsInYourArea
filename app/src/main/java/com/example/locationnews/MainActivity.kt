@@ -22,12 +22,11 @@ class MainActivity : AppCompatActivity(){
         viewModel = ViewModelProvider(this, viewModelFactory).get(NewsViewModel::class.java)
 
         val params = hashMapOf<String, String>(
-            "q" to "apple",
-            "langauge" to "en",
-            "apiKey" to API_KEY
+            "country" to "ca",
+            "category" to "technology"
         )
 
-        viewModel.getEverythingPost(params)
+        viewModel.getHeadlinesPost(params)
         viewModel.modelResponse.observe(this, Observer { response ->
             for(value in response) {
                 Log.d("------", "")
