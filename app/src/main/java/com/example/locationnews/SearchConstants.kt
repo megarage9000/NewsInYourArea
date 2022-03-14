@@ -3,29 +3,29 @@ package com.example.locationnews
 import com.google.gson.*
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
-
+import java.util.*
+import kotlin.collections.HashMap
 
 
 class SearchConstants {
     companion object {
-        val sortByOptions = arrayOf(
-            "relevancy",
-            "popularity",
-            "publishedAt"
+        val sortByOptions = hashMapOf(
+            "Keyword Relevancy" to "relevancy",
+            "Popularity" to "popularity",
+            "Recency" to "publishedAt"
         )
 
-        val categoryOptions = arrayOf(
-            "business",
-            "entertainment",
-            "general",
-            "health",
-            "science",
-            "sports",
-            "technology"
+        val categoryOptions = hashMapOf(
+            "Business" to "business",
+            "Entertainment" to "entertainment",
+            "General" to "general",
+            "Science" to "science",
+            "Sports" to "sports",
+            "Technology" to "technology"
         )
 
-        var countryCodes: HashMap<String, String> = hashMapOf()
-        var languageCodes: HashMap<String, String> = hashMapOf()
+        var countryCodes: SortedMap<String, String> = sortedMapOf()
+        var languageCodes: SortedMap<String, String> = sortedMapOf()
 
         val codesType: Type = object : TypeToken<HashMap<String, String>>() {}.type
 

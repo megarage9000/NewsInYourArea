@@ -58,7 +58,9 @@ class NewsSearchDialog(context: Context) : Dialog(context) {
                         spinner1.selectedItem.toString()
                 ].toString()
 
-                params["category"] = spinner2.selectedItem.toString()
+                params["category"] = SearchConstants.languageCodes[
+                        spinner2.selectedItem.toString()
+                ].toString()
                 searchListeners?.searchHeadlines(params)
             }
             else {
@@ -66,13 +68,14 @@ class NewsSearchDialog(context: Context) : Dialog(context) {
                         spinner1.selectedItem.toString()
                 ].toString()
 
-                params["sortBy"] = spinner2.selectedItem.toString()
+                params["sortBy"] = SearchConstants.languageCodes[
+                        spinner2.selectedItem.toString()
+                ].toString()
                 searchListeners?.search(params)
             }
 
             Log.d("values = ", params.toString())
         }
-
         switchContentsSpinners(isHeadline)
     }
 
@@ -83,7 +86,7 @@ class NewsSearchDialog(context: Context) : Dialog(context) {
             setSpinners(
                 SearchConstants.countryCodes.keys.toTypedArray(),
                 "Country",
-                SearchConstants.categoryOptions,
+                SearchConstants.categoryOptions.keys.toTypedArray(),
                 "Category"
             )
         }
@@ -91,7 +94,7 @@ class NewsSearchDialog(context: Context) : Dialog(context) {
             setSpinners(
                 SearchConstants.languageCodes.keys.toTypedArray(),
                 "Language",
-                SearchConstants.sortByOptions,
+                SearchConstants.sortByOptions.keys.toTypedArray(),
                 "Sort by"
             )
         }

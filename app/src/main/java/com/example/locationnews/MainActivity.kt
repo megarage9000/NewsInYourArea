@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity(), SearchInterface{
             SearchConstants.countryCodes = getJsonFromFile(
                 "country_codes.json",
                 SearchConstants.getCountryCodeGson(),
-                SearchConstants.codesType)!!
+                SearchConstants.codesType)!!.toSortedMap()
             if(SearchConstants.countryCodes != null) {
                 for (constant in SearchConstants.countryCodes){
                     Log.d("s", constant.toString())
@@ -51,15 +51,15 @@ class MainActivity : AppCompatActivity(), SearchInterface{
             SearchConstants.languageCodes = getJsonFromFile(
                 "language_codes.json",
                 SearchConstants.getLanguageCodeGson(),
-                SearchConstants.codesType)!!
+                SearchConstants.codesType)!!.toSortedMap()
             if(SearchConstants.languageCodes != null) {
                 for (constant in SearchConstants.languageCodes){
                     Log.d("d", constant.toString())
                 }
+
             }
         }
     }
-
 
     private fun getJsonFromFile(filename: String, gson: Gson, type: Type) : HashMap<String, String>? {
         return try{
