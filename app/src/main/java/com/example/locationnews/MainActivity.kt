@@ -3,6 +3,8 @@ package com.example.locationnews
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,7 +34,10 @@ class MainActivity : AppCompatActivity(), SearchInterface{
         newsRecycler.layoutManager = LinearLayoutManager(this)
         newsRecycler.adapter = NewsViewRecyclerView(newsList, this, layoutInflater)
 
-        NewsSearchDialog(this).show()
+        val searchButton = findViewById<Button>(R.id.startNewsSearch)
+        searchButton.setOnClickListener {
+            NewsSearchDialog(this).show()
+        }
     }
 
     private fun setUpJsonSearchConstants() {
@@ -111,10 +116,16 @@ class MainActivity : AppCompatActivity(), SearchInterface{
                         Log.d("Published At", value.publishedAt)
                     }
                     (newsRecycler.adapter as NewsViewRecyclerView).updateList(responseItems)
+                    updateNumArticlesFound(responseItems.size)
                 }
             }else {
                 Log.d("Response not successful", response.code().toString())
             }
         })
+    }
+
+    private fun updateNumArticlesFound(num: Int) {
+        val numArticleText = findViewById<TextView>(R.id.numArticles)
+        numArticleText.text = "Number of articles found: $num"
     }
 }

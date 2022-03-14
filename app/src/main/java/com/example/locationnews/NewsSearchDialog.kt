@@ -73,8 +73,8 @@ class NewsSearchDialog(context: Context) : Dialog(context) {
                 ].toString()
                 searchListeners?.search(params)
             }
-
             Log.d("values = ", params.toString())
+            dismiss()
         }
         switchContentsSpinners(isHeadline)
     }
