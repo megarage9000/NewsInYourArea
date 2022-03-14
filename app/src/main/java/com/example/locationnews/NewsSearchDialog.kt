@@ -72,7 +72,6 @@ class NewsSearchDialog(context: Context) : Dialog(context) {
                 ].toString()
                 searchListeners?.search(params)
             }
-            Log.d("values = ", params.toString())
             dismiss()
         }
 
@@ -96,6 +95,8 @@ class NewsSearchDialog(context: Context) : Dialog(context) {
             }
         )
         switchContentsSpinners(isHeadline)
+
+        // Switches between headline search or not
         val headLineSwitch = findViewById<Switch>(R.id.headlineSwitch)
         headLineSwitch.setOnCheckedChangeListener { _, _ ->
             isHeadline = !isHeadline

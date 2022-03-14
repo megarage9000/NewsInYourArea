@@ -53,11 +53,11 @@ class GetNewsItemDeserializer : JsonDeserializer<MutableList<NewsGet>> {
                 val url = getJsonNullable(jsonItemObject, "url")?.asString
                 val publishedAt = getJsonNullable(jsonItemObject, "publishedAt")?.asString
                 items.add(NewsGet(
-                    (publisher ?: "NaN"),
-                    (title ?: "NaN"),
-                    (description ?: "NaN"),
-                    (url ?: "NaN"),
-                    (publishedAt ?: "NaN")))
+                    (publisher ?: " "),
+                    (title ?: " "),
+                    (description ?: " "),
+                    (url ?: " "),
+                    (publishedAt ?: " ")))
             }
         }
         return items.toMutableList()

@@ -18,13 +18,16 @@ import java.lang.reflect.Type
 lateinit var viewModel: NewsViewModel
 lateinit var newsRecycler: RecyclerView
 
+
 class MainActivity : AppCompatActivity(), SearchInterface{
+
+    private lateinit var loading: LoadingDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        loading = LoadingDialog(this)
         setUpJsonSearchConstants()
-
         val repository = NewsRepository()
         val viewModelFactory = NewsViewModelFactory(repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(NewsViewModel::class.java)
@@ -38,6 +41,15 @@ class MainActivity : AppCompatActivity(), SearchInterface{
         searchButton.setOnClickListener {
             NewsSearchDialog(this).show()
         }
+
+        var params = hashMapOf<String, String>(
+            "q" to "bitcoin",
+            "language" to "en",
+            "sortBy" to "popularity"
+        )
+
+        search(params)
+        trackGetRequest()
     }
 
     private fun setUpJsonSearchConstants() {
@@ -46,18 +58,12 @@ class MainActivity : AppCompatActivity(), SearchInterface{
                 "country_codes.json",
                 SearchConstants.getCountryCodeGson(),
                 SearchConstants.codesType)!!.toSortedMap()
-            for (constant in SearchConstants.countryCodes){
-                Log.d("s", constant.toString())
-            }
         }
         if (SearchConstants.languageCodes.isEmpty()) {
             SearchConstants.languageCodes = getJsonFromFile(
                 "language_codes.json",
                 SearchConstants.getLanguageCodeGson(),
                 SearchConstants.codesType)!!.toSortedMap()
-            for (constant in SearchConstants.languageCodes){
-                Log.d("d", constant.toString())
-            }
         }
     }
 
@@ -75,41 +81,38 @@ class MainActivity : AppCompatActivity(), SearchInterface{
 
 
     fun trackGetRequest() {
+        loading.show()
         viewModel.modelResponse.observe(this, Observer { response ->
             if(response.isSuccessful){
                 val responseItems = response.body()
                 if (responseItems != null) {
-                    for(value in responseItems) {
-                        Log.d("------", "")
-                        Log.d("Publisher", value.publisher)
-                        Log.d("Title", value.title)
-                        Log.d("Description", value.description)
-                        Log.d("URL", value.urlToPage)
-                        Log.d("Published At", value.publishedAt)
-                    }
                     (newsRecycler.adapter as NewsViewRecyclerView).updateList(responseItems)
                     updateNumArticlesFound(responseItems.size)
                 }
             }else {
                 Log.d("Response not successful", response.code().toString())
             }
+            loading.hide()
         })
     }
 
     override fun searchHeadlines(params: HashMap<String, String>) {
-        Log.d("Calling search headlines", "")
         viewModel.getHeadlinesPost(params)
         trackGetRequest()
     }
 
     override fun search(params: HashMap<String, String>) {
-        Log.d("Calling search ", "")
         viewModel.getEverythingPost(params)
         trackGetRequest()
     }
 
     private fun updateNumArticlesFound(num: Int) {
         val numArticleText = findViewById<TextView>(R.id.numArticles)
-        numArticleText.text = "Number of articles found: $num"
+        if(num == 0) {
+            numArticleText.text = "No articles found"
+        }
+        else{
+            numArticleText.text = "Number of articles found: $num"
+        }
     }
 }
