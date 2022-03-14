@@ -4,70 +4,59 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:baselineAligned="false">
+    android:layout_margin="20dp"
+    android:baselineAligned="false"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/NewsTitle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="sans-serif-black"
+        android:padding="5dp"
+        android:text="Title"
+        android:textAllCaps="false"
+        android:textColor="#000000"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/NewsTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:layout_marginTop="5dp"
-            android:fontFamily="sans-serif-black"
-            android:padding="5dp"
-            android:text="Title"
-            android:textAllCaps="false"
-            android:textColor="#000000"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+    <TextView
+        android:id="@+id/NewsPublisher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:fontFamily="sans-serif-medium"
+        android:padding="5dp"
+        android:text="Publisher"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:textStyle="italic" />
 
-        <TextView
-            android:id="@+id/NewsPublisher"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:fontFamily="sans-serif-medium"
-            android:padding="5dp"
-            android:text="Publisher"
-            android:textColor="#000000"
-            android:textSize="16sp"
-            android:textStyle="italic" />
+    <TextView
+        android:id="@+id/NewsDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:padding="5dp"
+        android:text="description"
+        android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/NewsDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:padding="5dp"
-            android:text="description"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/NewsWebsite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="5dp"
-            android:background="@drawable/news_website_bg"
-            android:fontFamily="sans-serif-condensed-light"
-            android:padding="5dp"
-            android:text="Website"
-            android:textSize="16sp" />
-
-    </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/NewsWebView"
+    <TextView
+        android:id="@+id/NewsWebsite"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
-
-    </FrameLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:background="@drawable/news_website_bg"
+        android:fontFamily="sans-serif-condensed-light"
+        android:padding="5dp"
+        android:text="Visit website"
+        android:textAlignment="viewEnd"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
 </LinearLayout>

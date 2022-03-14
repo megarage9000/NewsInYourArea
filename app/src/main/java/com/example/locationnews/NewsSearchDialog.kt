@@ -6,6 +6,8 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.widget.*
 
@@ -25,6 +27,8 @@ class NewsSearchDialog(context: Context) : Dialog(context) {
     lateinit var spinner1Title: TextView
     lateinit var spinner2Title: TextView
 
+    lateinit var searchButton: Button
+
     var isHeadline = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,13 +47,8 @@ class NewsSearchDialog(context: Context) : Dialog(context) {
         spinner1Title = findViewById(R.id.spinner1Name)
         spinner2Title = findViewById(R.id.spinner2Name)
 
-        val headLineSwitch = findViewById<Switch>(R.id.headlineSwitch)
-        headLineSwitch.setOnCheckedChangeListener { _, _ ->
-            isHeadline = !isHeadline
-            switchContentsSpinners(isHeadline)
-        }
-
-        val searchButton = findViewById<Button>(R.id.newsSearchButton)
+        // Setting up search button
+        searchButton = findViewById<Button>(R.id.newsSearchButton)
         searchButton.setOnClickListener {
             var params = HashMap<String, String>()
             params["q"] = findViewById<EditText>(R.id.keywordEntry).text.toString()
@@ -58,7 +57,7 @@ class NewsSearchDialog(context: Context) : Dialog(context) {
                         spinner1.selectedItem.toString()
                 ].toString()
 
-                params["category"] = SearchConstants.languageCodes[
+                params["category"] = SearchConstants.categoryOptions[
                         spinner2.selectedItem.toString()
                 ].toString()
                 searchListeners?.searchHeadlines(params)
@@ -68,7 +67,7 @@ class NewsSearchDialog(context: Context) : Dialog(context) {
                         spinner1.selectedItem.toString()
                 ].toString()
 
-                params["sortBy"] = SearchConstants.languageCodes[
+                params["sortBy"] = SearchConstants.sortByOptions[
                         spinner2.selectedItem.toString()
                 ].toString()
                 searchListeners?.search(params)
@@ -76,7 +75,41 @@ class NewsSearchDialog(context: Context) : Dialog(context) {
             Log.d("values = ", params.toString())
             dismiss()
         }
+
+        // Setting up text entry
+        val textEntry = findViewById<EditText>(R.id.keywordEntry)
+        textEntry.addTextChangedListener(
+            object : TextWatcher {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    return
+                }
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    return
+                }
+
+                override fun afterTextChanged(p0: Editable?) {
+                    var numText = textEntry.text.toString().length
+                    searchButton.isEnabled = numText > 0 && !isHeadline
+                }
+
+            }
+        )
         switchContentsSpinners(isHeadline)
+        val headLineSwitch = findViewById<Switch>(R.id.headlineSwitch)
+        headLineSwitch.setOnCheckedChangeListener { _, _ ->
+            isHeadline = !isHeadline
+            switchContentsSpinners(isHeadline)
+            if(isHeadline) {
+                searchButton.isEnabled = true
+            }
+            else{
+                var numText = textEntry.text.toString().length
+                searchButton.isEnabled = numText > 0 && !isHeadline
+            }
+        }
+
+        searchButton.isEnabled = false
     }
 
 

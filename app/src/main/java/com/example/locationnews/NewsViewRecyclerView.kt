@@ -1,6 +1,8 @@
 package com.example.locationnews
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +22,11 @@ class NewsViewRecyclerView (private var newsList: MutableList<NewsGet>,
                 newsView.findViewById<TextView>(R.id.NewsTitle).text = newsContent.title
                 newsView.findViewById<TextView>(R.id.NewsPublisher).text = "Source: " + newsContent.publisher
                 newsView.findViewById<TextView>(R.id.NewsDescription).text = newsContent.description
+                newsView.findViewById<TextView>(R.id.NewsWebsite).setOnClickListener {
+                    val browserIntent = Intent(Intent.ACTION_VIEW,
+                        Uri.parse(newsContent.urlToPage))
+                        this.itemView.context.startActivity(browserIntent)
+                }
             }
     }
 

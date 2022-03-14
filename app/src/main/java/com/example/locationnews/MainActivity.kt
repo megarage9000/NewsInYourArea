@@ -46,10 +46,8 @@ class MainActivity : AppCompatActivity(), SearchInterface{
                 "country_codes.json",
                 SearchConstants.getCountryCodeGson(),
                 SearchConstants.codesType)!!.toSortedMap()
-            if(SearchConstants.countryCodes != null) {
-                for (constant in SearchConstants.countryCodes){
-                    Log.d("s", constant.toString())
-                }
+            for (constant in SearchConstants.countryCodes){
+                Log.d("s", constant.toString())
             }
         }
         if (SearchConstants.languageCodes.isEmpty()) {
@@ -57,11 +55,8 @@ class MainActivity : AppCompatActivity(), SearchInterface{
                 "language_codes.json",
                 SearchConstants.getLanguageCodeGson(),
                 SearchConstants.codesType)!!.toSortedMap()
-            if(SearchConstants.languageCodes != null) {
-                for (constant in SearchConstants.languageCodes){
-                    Log.d("d", constant.toString())
-                }
-
+            for (constant in SearchConstants.languageCodes){
+                Log.d("d", constant.toString())
             }
         }
     }
@@ -77,32 +72,9 @@ class MainActivity : AppCompatActivity(), SearchInterface{
         }
     }
 
-    override fun searchHeadlines(params: HashMap<String, String>) {
-        Log.d("Calling search headlines", "")
-        viewModel.getHeadlinesPost(params)
-        viewModel.modelResponse.observe(this, Observer { response ->
-            if(response.isSuccessful){
-                val responseItems = response.body()
-                if (responseItems != null) {
-                    for(value in responseItems) {
-                        Log.d("------", "")
-                        Log.d("Publisher", value.publisher)
-                        Log.d("Title", value.title)
-                        Log.d("Description", value.description)
-                        Log.d("URL", value.urlToPage)
-                        Log.d("Published At", value.publishedAt)
-                    }
-                    (newsRecycler.adapter as NewsViewRecyclerView).updateList(responseItems)
-                }
-            }else {
-                Log.d("Response not successful", response.code().toString())
-            }
-        })
-    }
 
-    override fun search(params: HashMap<String, String>) {
-        Log.d("Calling search ", "")
-        viewModel.getEverythingPost(params)
+
+    fun trackGetRequest() {
         viewModel.modelResponse.observe(this, Observer { response ->
             if(response.isSuccessful){
                 val responseItems = response.body()
@@ -122,6 +94,18 @@ class MainActivity : AppCompatActivity(), SearchInterface{
                 Log.d("Response not successful", response.code().toString())
             }
         })
+    }
+
+    override fun searchHeadlines(params: HashMap<String, String>) {
+        Log.d("Calling search headlines", "")
+        viewModel.getHeadlinesPost(params)
+        trackGetRequest()
+    }
+
+    override fun search(params: HashMap<String, String>) {
+        Log.d("Calling search ", "")
+        viewModel.getEverythingPost(params)
+        trackGetRequest()
     }
 
     private fun updateNumArticlesFound(num: Int) {
