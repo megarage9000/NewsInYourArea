@@ -14,8 +14,9 @@ import java.io.InputStream
 import java.lang.reflect.Type
 
 lateinit var viewModel: NewsViewModel
+lateinit var newsRecycler: RecyclerView
 
-class MainActivity : AppCompatActivity(){
+class MainActivity : AppCompatActivity(), SearchInterface{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -26,34 +27,10 @@ class MainActivity : AppCompatActivity(){
         val viewModelFactory = NewsViewModelFactory(repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(NewsViewModel::class.java)
 
-        val params = hashMapOf<String, String>(
-            "country" to "ca",
-            "category" to "business"
-        )
-
-
         val newsList = mutableListOf<NewsGet>()
-        val newsRecycler = findViewById<RecyclerView>(R.id.NewsListView)
+        newsRecycler = findViewById<RecyclerView>(R.id.NewsListView)
         newsRecycler.layoutManager = LinearLayoutManager(this)
         newsRecycler.adapter = NewsViewRecyclerView(newsList, this, layoutInflater)
-
-        viewModel.getHeadlinesPost(params)
-        viewModel.modelResponse.observe(this, Observer { response ->
-            if(response.isSuccessful){
-                val responseItems = response.body()
-                if (responseItems != null) {
-                    for(value in responseItems) {
-                        Log.d("------", "")
-                        Log.d("Publisher", value.publisher)
-                        Log.d("Title", value.title)
-                        Log.d("Description", value.description)
-                        Log.d("URL", value.urlToPage)
-                        Log.d("Published At", value.publishedAt)
-                    }
-                    (newsRecycler.adapter as NewsViewRecyclerView).updateList(responseItems)
-                }
-            }
-        })
 
         NewsSearchDialog(this).show()
     }
@@ -93,5 +70,51 @@ class MainActivity : AppCompatActivity(){
             ioException.printStackTrace()
             null
         }
+    }
+
+    override fun searchHeadlines(params: HashMap<String, String>) {
+        Log.d("Calling search headlines", "")
+        viewModel.getHeadlinesPost(params)
+        viewModel.modelResponse.observe(this, Observer { response ->
+            if(response.isSuccessful){
+                val responseItems = response.body()
+                if (responseItems != null) {
+                    for(value in responseItems) {
+                        Log.d("------", "")
+                        Log.d("Publisher", value.publisher)
+                        Log.d("Title", value.title)
+                        Log.d("Description", value.description)
+                        Log.d("URL", value.urlToPage)
+                        Log.d("Published At", value.publishedAt)
+                    }
+                    (newsRecycler.adapter as NewsViewRecyclerView).updateList(responseItems)
+                }
+            }else {
+                Log.d("Response not successful", response.code().toString())
+            }
+        })
+    }
+
+    override fun search(params: HashMap<String, String>) {
+        Log.d("Calling search ", "")
+        viewModel.getEverythingPost(params)
+        viewModel.modelResponse.observe(this, Observer { response ->
+            if(response.isSuccessful){
+                val responseItems = response.body()
+                if (responseItems != null) {
+                    for(value in responseItems) {
+                        Log.d("------", "")
+                        Log.d("Publisher", value.publisher)
+                        Log.d("Title", value.title)
+                        Log.d("Description", value.description)
+                        Log.d("URL", value.urlToPage)
+                        Log.d("Published At", value.publishedAt)
+                    }
+                    (newsRecycler.adapter as NewsViewRecyclerView).updateList(responseItems)
+                }
+            }else {
+                Log.d("Response not successful", response.code().toString())
+            }
+        })
     }
 }

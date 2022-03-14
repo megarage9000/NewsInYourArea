@@ -1,5 +1,6 @@
 package com.example.locationnews
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
@@ -7,8 +8,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
-import okhttp3.internal.notifyAll
-
 
 
 interface SearchInterface {
@@ -16,9 +15,9 @@ interface SearchInterface {
     fun search(params: HashMap<String, String>)
 }
 
-class NewsSearchDialog(context: Context, ) : Dialog(context) {
+class NewsSearchDialog(context: Context) : Dialog(context) {
 
-    private lateinit var searchListeners: SearchInterface
+    private var searchListeners: SearchInterface? = if(context is SearchInterface) context as SearchInterface else null
 
     lateinit var spinner1: Spinner
     lateinit var spinner2: Spinner
@@ -29,6 +28,7 @@ class NewsSearchDialog(context: Context, ) : Dialog(context) {
     var isHeadline = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.news_search_dialog)
         this.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
@@ -54,14 +54,20 @@ class NewsSearchDialog(context: Context, ) : Dialog(context) {
             var params = HashMap<String, String>()
             params["q"] = findViewById<EditText>(R.id.keywordEntry).text.toString()
             if(isHeadline){
-                params["country"] = spinner1.selectedItem.toString()
+                params["country"] = SearchConstants.countryCodes[
+                        spinner1.selectedItem.toString()
+                ].toString()
+
                 params["category"] = spinner2.selectedItem.toString()
-               // searchListeners.searchHeadlines(params)
+                searchListeners?.searchHeadlines(params)
             }
             else {
-                params["language"] = spinner1.selectedItem.toString()
+                params["language"] = SearchConstants.languageCodes[
+                        spinner1.selectedItem.toString()
+                ].toString()
+
                 params["sortBy"] = spinner2.selectedItem.toString()
-                //searchListeners.search(params)
+                searchListeners?.search(params)
             }
 
             Log.d("values = ", params.toString())
@@ -69,6 +75,8 @@ class NewsSearchDialog(context: Context, ) : Dialog(context) {
 
         switchContentsSpinners(isHeadline)
     }
+
+
 
     private fun switchContentsSpinners(isHeadlines: Boolean) {
         if(isHeadlines) {
