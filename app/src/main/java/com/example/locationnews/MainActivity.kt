@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity(){
 
         val params = hashMapOf<String, String>(
             "country" to "ca",
-            "category" to "technology"
+            "category" to "business"
         )
 
         val newsList = mutableListOf<NewsGet>()
@@ -47,5 +47,7 @@ class MainActivity : AppCompatActivity(){
                 }
             }
         })
+
+        NewsSearchDialog(this).show()
     }
 }

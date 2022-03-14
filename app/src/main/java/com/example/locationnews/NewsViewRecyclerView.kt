@@ -18,7 +18,7 @@ class NewsViewRecyclerView (private var newsList: MutableList<NewsGet>,
             fun setContent(newsContent: NewsGet) {
                 var newsView = this.itemView
                 newsView.findViewById<TextView>(R.id.NewsTitle).text = newsContent.title
-                newsView.findViewById<TextView>(R.id.NewsPublisher).text = newsContent.publisher
+                newsView.findViewById<TextView>(R.id.NewsPublisher).text = "Source: " + newsContent.publisher
                 newsView.findViewById<TextView>(R.id.NewsDescription).text = newsContent.description
             }
     }
