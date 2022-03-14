@@ -5,10 +5,8 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.Switch
-import android.widget.TextView
+import android.util.Log
+import android.widget.*
 import okhttp3.internal.notifyAll
 
 
@@ -18,7 +16,9 @@ interface SearchInterface {
     fun search(params: HashMap<String, String>)
 }
 
-class NewsSearchDialog(context: Context) : Dialog(context) {
+class NewsSearchDialog(context: Context, ) : Dialog(context) {
+
+    private lateinit var searchListeners: SearchInterface
 
     lateinit var spinner1: Spinner
     lateinit var spinner2: Spinner
@@ -44,15 +44,33 @@ class NewsSearchDialog(context: Context) : Dialog(context) {
         spinner2Title = findViewById(R.id.spinner2Name)
 
         val headLineSwitch = findViewById<Switch>(R.id.headlineSwitch)
-        headLineSwitch.setOnCheckedChangeListener { compoundButton, b ->
+        headLineSwitch.setOnCheckedChangeListener { _, _ ->
             isHeadline = !isHeadline
             switchContentsSpinners(isHeadline)
+        }
+
+        val searchButton = findViewById<Button>(R.id.newsSearchButton)
+        searchButton.setOnClickListener {
+            var params = HashMap<String, String>()
+            params["q"] = findViewById<EditText>(R.id.keywordEntry).text.toString()
+            if(isHeadline){
+                params["country"] = spinner1.selectedItem.toString()
+                params["category"] = spinner2.selectedItem.toString()
+               // searchListeners.searchHeadlines(params)
+            }
+            else {
+                params["language"] = spinner1.selectedItem.toString()
+                params["sortBy"] = spinner2.selectedItem.toString()
+                //searchListeners.search(params)
+            }
+
+            Log.d("values = ", params.toString())
         }
 
         switchContentsSpinners(isHeadline)
     }
 
-    fun switchContentsSpinners(isHeadlines: Boolean) {
+    private fun switchContentsSpinners(isHeadlines: Boolean) {
         if(isHeadlines) {
             setSpinners(
                 SearchConstants.countryCodes.keys.toTypedArray(),
@@ -71,7 +89,7 @@ class NewsSearchDialog(context: Context) : Dialog(context) {
         }
     }
 
-    fun setSpinners(list1: Array<String>, name1: String, list2: Array<String>, name2: String) {
+    private fun setSpinners(list1: Array<String>, name1: String, list2: Array<String>, name2: String) {
         val spinnerAdapter = ArrayAdapter<String>(context, R.layout.news_spinner_item, list1)
         spinnerAdapter.setDropDownViewResource(androidx.appcompat.R.layout.support_simple_spinner_dropdown_item)
         spinner1.adapter = spinnerAdapter
