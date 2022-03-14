@@ -2,6 +2,7 @@ package com.example.locationnews
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.locationnews.model.*
 import com.google.gson.Gson
+import okhttp3.internal.wait
 import java.io.IOException
 import java.io.InputStream
 import java.lang.reflect.Type
@@ -22,6 +24,7 @@ lateinit var newsRecycler: RecyclerView
 class MainActivity : AppCompatActivity(), SearchInterface{
 
     private lateinit var loading: LoadingDialog
+    private val MAX_NUM_PAGES = 15
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +52,6 @@ class MainActivity : AppCompatActivity(), SearchInterface{
         )
 
         search(params)
-        trackGetRequest()
     }
 
     private fun setUpJsonSearchConstants() {
@@ -78,32 +80,45 @@ class MainActivity : AppCompatActivity(), SearchInterface{
         }
     }
 
-
-
-    fun trackGetRequest() {
+    fun trackGetRequest(listener: (HashMap<String, String>) -> Unit, params: HashMap<String, String>) {
         loading.show()
+        val items = mutableListOf<NewsGet>()
+        var index = 1
+        params["page"] = index.toString()
+        listener(params)
         viewModel.modelResponse.observe(this, Observer { response ->
-            if(response.isSuccessful){
+            if(response.isSuccessful && index <= MAX_NUM_PAGES){
                 val responseItems = response.body()
                 if (responseItems != null) {
-                    (newsRecycler.adapter as NewsViewRecyclerView).updateList(responseItems)
-                    updateNumArticlesFound(responseItems.size)
+                        items.addAll(responseItems.toMutableList())
+                    index++
+                    params["page"] = index.toString()
+                    Log.d("At page ", "" + index)
+                    Thread.sleep(500)
+                    listener(params)
+                }
+                else{
+                    (newsRecycler.adapter as NewsViewRecyclerView).updateList(items)
+                    updateNumArticlesFound(items.size)
                 }
             }else {
+                (newsRecycler.adapter as NewsViewRecyclerView).updateList(items)
+                updateNumArticlesFound(items.size)
                 Log.d("Response not successful", response.code().toString())
             }
-            loading.hide()
+            Handler().post {
+                loading.hide()
+            }
+
         })
     }
 
     override fun searchHeadlines(params: HashMap<String, String>) {
-        viewModel.getHeadlinesPost(params)
-        trackGetRequest()
+        trackGetRequest(viewModel::getHeadlinesPost, params)
     }
 
     override fun search(params: HashMap<String, String>) {
-        viewModel.getEverythingPost(params)
-        trackGetRequest()
+        trackGetRequest(viewModel::getEverythingPost, params)
     }
 
     private fun updateNumArticlesFound(num: Int) {
