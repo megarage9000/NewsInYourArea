@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity(){
                     }
                     (newsRecycler.adapter as NewsViewRecyclerView).updateList(responseItems)
                 }
-
             }
         })
     }

@@ -26,6 +26,11 @@ class NewsViewRecyclerView (private var newsList: MutableList<NewsGet>,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NewsViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.news_view_item, parent, false)
+        val layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        view.layoutParams = layoutParams
         return NewsViewHolder(inflater, parent, view)
     }
 
